@@ -1,0 +1,16 @@
+{
+	"installPath": "/code",
+	"database":
+	{
+		"host":"10.5.0.1",
+		"user":"state_checker",
+		"password":"ENTERYOURPASSWORD",
+  		"database":"state_checker",
+  		"port":"3306"
+	},
+	"telegram":
+	{
+		"botToken":"ENTERTHEBOTTOKEN_THEBOTFATHERGAVETOYOU",
+		"adminChatID":"-xxxxxxxxx"
+	}
+}

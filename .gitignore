@@ -127,3 +127,20 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+
+
+
+## Custom gitignore adaptions.
+
+# Do not version config.txt . 
+config.txt
+
+# Ignore the Environment (.env) file, that contains passwords and connection details.
+.env
+
+# Must ignore docker-compose.yml and use template to prevent same name services.
+docker-compose.yml
+
+# Do not version logs. 
+logs

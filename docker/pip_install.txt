@@ -1,0 +1,3 @@
+telepot
+fastapi
+uvicorn[standard]
