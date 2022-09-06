@@ -19,13 +19,13 @@
 
 class StateCheckItem:
 
-    # Constructor.
-    def __init__(self, name, token, stateCheckFrequency_inMinutes, description = "", ID = None, lastTimeToolWasUp = None, toolIsDownMessageHasBeenSent = 0):
+	# Constructor.
+	def __init__(self, name, token, stateCheckFrequency_inMinutes, description = "", ID = None, lastTimeToolWasUp = None, toolIsDownMessageHasBeenSent = 0):
 
-        self.ID = ID
-        self.name = name
-        self.description = description
-        self.token = token
-        self.stateCheckFrequency_inMinutes = stateCheckFrequency_inMinutes
-        self.lastTimeToolWasUp = lastTimeToolWasUp
-        self.toolIsDownMessageHasBeenSent = toolIsDownMessageHasBeenSent
+		self.ID = ID
+		self.name = name
+		self.description = description
+		self.token = token
+		self.stateCheckFrequency_inMinutes = stateCheckFrequency_inMinutes
+		self.lastTimeToolWasUp = lastTimeToolWasUp
+		self.toolIsDownMessageHasBeenSent = toolIsDownMessageHasBeenSent

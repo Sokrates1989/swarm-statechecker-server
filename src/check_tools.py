@@ -110,9 +110,11 @@ while True:
 
 		# Get states of tools.
 		toolStateItems_api = stateCheckUtils.getToolStates_api()
+		toolStateItems_custom = stateCheckUtils.getToolStates_custom()
+		toolStateItems = toolStateItems_api + toolStateItems_custom
 
 		# Check the states of the tools.
-		for toolStateItem in toolStateItems_api:
+		for toolStateItem in toolStateItems:
 
 			# Is the tool up?
 			if toolStateItem.toolIsUp == False:
@@ -128,11 +130,17 @@ while True:
 					print (toolStateItem.name)
 					print ("sending mesage now..")
 
-					# Indicate to DB, that message has been sent.
-					dbWrapper.updateToolIsDownMessageHasBeenSentState(toolStateItem.name, 1)
+					# Indicate, that tool is down message has been sent.
+					if toolStateItem.isCustomCheck == True:
+						stateCheckUtils.writeMessageHasBeenSentStateToFile(toolStateItem, True)
+					else:
+						# Indicate to DB, that message has been sent.
+						dbWrapper.updateToolIsDownMessageHasBeenSentState(toolStateItem.name, 1)
 					
 					# Send the message to the error message channel.
-					toolStateItemIsDownMsg = "Your tool is <b>DOWN!</b> \n\n<b>" + str(toolStateItem.name) + "</b>\n" + str(toolStateItem.description)
+					toolStateItemIsDownMsg = "Your tool is <b>DOWN!</b> \n\n<b>" + str(toolStateItem.name) + "</b>"
+					toolStateItemIsDownMsg += "" if toolStateItem.description == "" else "\n" + str(toolStateItem.description)
+					toolStateItemIsDownMsg += "" if toolStateItem.statusMessage == "" or toolStateItem.statusMessage == "OK" else "\n" + str(toolStateItem.statusMessage)
 					bot.send_message(errorChatID, toolStateItemIsDownMsg )
 
 
@@ -149,11 +157,17 @@ while True:
 					print (toolStateItem.name)
 					print ("sending mesage now..")
 
-					# Indicate to DB, that message has been sent.
-					toolStateItem = dbWrapper.updateToolIsDownMessageHasBeenSentState(toolStateItem.name, 0)
+					# Indicate, that tool is down message has been sent.
+					if toolStateItem.isCustomCheck == True:
+						stateCheckUtils.writeMessageHasBeenSentStateToFile(toolStateItem, False)
+					else:
+						# Indicate to DB, that message has been sent.
+						dbWrapper.updateToolIsDownMessageHasBeenSentState(toolStateItem.name, 0)
 					
 					# Send the message to the error message channel.
-					toolStateItemIsUpAgainMsg = "Your tool is <b>UP AGAIN!</b> \n\n<b>" + str(toolStateItem.name) + "</b>\n" + str(toolStateItem.description)
+					toolStateItemIsUpAgainMsg = "Your tool is <b>UP AGAIN!</b> \n\n<b>" + str(toolStateItem.name) + "</b>"
+					toolStateItemIsUpAgainMsg += "" if toolStateItem.description == "" else "\n" + str(toolStateItem.description)
+					toolStateItemIsUpAgainMsg += "" if toolStateItem.statusMessage == "" or toolStateItem.statusMessage == "OK" else "\n" + str(toolStateItem.statusMessage)
 					bot.send_message(errorChatID, toolStateItemIsUpAgainMsg )
 
 

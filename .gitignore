@@ -141,3 +141,6 @@ config.txt
 
 # Do not version logs. 
 logs
+
+# Do not version message sent states. 
+messageSentStates
