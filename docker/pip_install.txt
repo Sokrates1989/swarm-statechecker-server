@@ -1,3 +1,4 @@
-telepot
+pyTelegramBotAPI
 fastapi
 uvicorn[standard]
+mysql-connector-python
