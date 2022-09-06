@@ -2,25 +2,29 @@
 
 # For getting current timestamp.
 import time
-
 # For making POST / GET requests.
 import requests
-
 # For file operations with operating system.
 import os
-
+# For getting config.
+import json
 # For creating files.
 import fileUtils
+
+## Own classes.
+# Database connection.
+import databaseWrapper as DatabaseWrapper
+# ToolStateItem from own models to use location independent.
+# Used to wrap state information about the tools to check.
+import toolStateItem as ToolStateItem
 
 # Path to messageSentStates of custom checks.
 messageSentStatesDirectory = os.path.join(os.path.dirname(__file__), "..", "..", "messageSentStates/")
 
-# Database connection.
-import databaseWrapper as DatabaseWrapper
-
-# ToolStateItem from own models to use location independent.
-# Used to wrap state information about the tools to check.
-import toolStateItem as ToolStateItem
+# Config file.
+config_file_pathAndName = os.path.join(os.path.dirname(__file__), "..", "..", "config.txt")
+config_file = open(config_file_pathAndName)
+config_array = json.load(config_file)
 
 # Get states of tools that are being checked by sending their own alive message to api.
 # Returns Array of ToolStateItems. See models for further information.
@@ -110,15 +114,7 @@ def getToolStates_custom():
 	toolStateItems = []
 
 	# Check website states for felicitas wisdom.
-	urls = [
-		"https://felicitas-wisdom.com",
-		"http://felicitas-wisdom.com",
-		"https://www.felicitas-wisdom.com",
-		"http://www.felicitas-wisdom.com",
-		"https://telegram.felicitas-wisdom.com",
-		"http://telegram.felicitas-wisdom.com",
-		"http://wtf.felicitas-wisdom.com",
-	]
+	urls = config_array["websitesToCheck"]
 	toolStateItems += getToolStates_websites(urls)
 	
 	# Return states of tools checked by the API.

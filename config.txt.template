@@ -11,6 +11,14 @@
 	"telegram":
 	{
 		"botToken":"ENTERTHEBOTTOKEN_THEBOTFATHERGAVETOYOU",
-		"adminChatID":"-xxxxxxxxx"
-	}
+		"errorChatID":"-xxxxxxxxx",
+		"infoChatID":"-xxxxxxxxx",
+		"adminStatusMessage_everyXMinutes":"60",
+		"adminStatusMessage_operationTime_offsetPercentage":"3.4"
+	},
+	"websitesToCheck":
+	[
+		"https://websiteToTest.com",
+		"http://websiteToTest.com"
+	]
 }
