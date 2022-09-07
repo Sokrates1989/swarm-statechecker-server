@@ -93,10 +93,10 @@ def getToolStatesMessage():
 			# Is the tool up?
 			if toolStateItem.toolIsUp == False:
 				# Tool is down.
-				toolStatesMessage += "🔸Tool <b>" + str(toolStateItem.name) + "</b> is <b>DOWN!</b>"
+				toolStatesMessage += "🔸Tool " + str(toolStateItem.name) + " is <b><u>DOWN!</u></b>"
 			else:
 				# Tool is up.
-				toolStatesMessage += "🔸Tool <b>" + str(toolStateItem.name) + "</b> is <b>UP!</b>"
+				toolStatesMessage += "🔸Tool " + str(toolStateItem.name) + " is <b><u>UP!</u></b>"
 
 			# Add description and statusMessage if not empty and spaces to end of message.
 			toolStatesMessage += "" if toolStateItem.description == "" else "\n" + str(toolStateItem.description)
