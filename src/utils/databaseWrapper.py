@@ -60,7 +60,7 @@ class DatabaseWrapper:
 			# Check if the token is the same.
 			if stateCheckItem.token == stateCheckItemToCreateOrUpdate.token:
 				# Update last time tool was up.
-				stateCheckItem = self.indicateThatToolIsUp(stateCheckItem, stateCheckItemToCreateOrUpdate.description)
+				stateCheckItem = self.indicateThatToolIsUp(stateCheckItem, stateCheckItemToCreateOrUpdate.description, stateCheckItemToCreateOrUpdate.stateCheckFrequency_inMinutes)
 			else:
 				# token is invalid.
 				return None
@@ -129,7 +129,7 @@ class DatabaseWrapper:
 
 	# Update lastTimeToolWasUp.
 	# Returns updated stateItem.
-	def indicateThatToolIsUp(self, stateCheckItemToUpdate, description):
+	def indicateThatToolIsUp(self, stateCheckItemToUpdate, description, stateCheckFrequency_inMinutes):
 
 		# Check if the token is the same.
 		stateCheckItem = self.getStateCheckItemByName(stateCheckItemToUpdate.name)
@@ -138,8 +138,8 @@ class DatabaseWrapper:
 			# Current time.
 			now = int(time.time())
 
-			sql = "UPDATE checked_tools SET lastTimeToolWasUp = %s, description = %s WHERE ID = %s"
-			val = (now, description, stateCheckItemToUpdate.ID)
+			sql = "UPDATE checked_tools SET lastTimeToolWasUp = %s, description = %s, stateCheckFrequency_inMinutes = %s WHERE ID = %s"
+			val = (now, description, stateCheckFrequency_inMinutes, stateCheckItemToUpdate.ID)
 
 			# Execute query.
 			self.mycursor.execute(sql, val)
