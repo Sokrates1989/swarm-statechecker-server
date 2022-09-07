@@ -60,7 +60,7 @@ def handleCommandException(exceptionLocationAndAdditionalInformation, exception)
 def infoCheckingToolsIsWorking(justStartedChecking=False):
 
 	# Create info text.
-	infoLogText = "<b><u>Tools are being checked.</u></b>"
+	infoLogText = "<b><u>Tools are being checked.</u></b>\nWebsites are being checked every <b>" + str(checkWebsitesEveryXMinutes) + "</b> minutes"
 	if justStartedChecking:
 		infoLogText += "\nJust (re-)started checking tools.\n\nAbout every " + str(adminMessageEvery_desiredMinutes) + " minutes a status message should be send, to verify that this program is still working correctly."
 	else:
@@ -105,6 +105,9 @@ adminMessageEvery_calculatedOffset = int(adminMessageEvery_desiredMinutes - (adm
 if adminMessageEvery_calculatedOffset == 0:
 	adminMessageEvery_calculatedOffset = 1
 
+# How often to check websiteStates.
+checkWebsitesEveryXMinutes = int(config_array["websites"]["checkWebSitesEveryXMinutes"])
+
 i = 0
 print("checking ...")
 infoCheckingToolsIsWorking(True)
@@ -125,8 +128,12 @@ while True:
 
 		# Get states of tools.
 		toolStateItems_api = stateCheckUtils.getToolStates_api()
-		toolStateItems_custom = stateCheckUtils.getToolStates_custom()
-		toolStateItems = toolStateItems_api + toolStateItems_custom
+		toolStateItems = toolStateItems_api
+
+		# Check websites.
+		if (i%checkWebsitesEveryXMinutes == 1):
+			toolStateItems += stateCheckUtils.getToolStates_websites()
+
 
 		# Check the states of the tools.
 		for toolStateItem in toolStateItems:

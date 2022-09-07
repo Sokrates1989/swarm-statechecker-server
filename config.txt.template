@@ -16,9 +16,13 @@
 		"adminStatusMessage_everyXMinutes":"60",
 		"adminStatusMessage_operationTime_offsetPercentage":"3.4"
 	},
-	"websitesToCheck":
-	[
-		"https://websiteToTest.com",
-		"http://websiteToTest.com"
-	]
+	"websites":
+	{
+		"checkWebSitesEveryXMinutes":30,
+		"websitesToCheck":
+		[
+			"https://websiteToTest.com",
+			"http://websiteToTest.com"
+		]
+	}
 }

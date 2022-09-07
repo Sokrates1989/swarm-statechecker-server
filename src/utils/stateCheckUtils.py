@@ -117,8 +117,7 @@ def getToolStates_custom():
 	toolStateItems = []
 
 	# Check website states for felicitas wisdom.
-	urls = config_array["websitesToCheck"]
-	toolStateItems += getToolStates_websites(urls)
+	toolStateItems += getToolStates_websites()
 	
 	# Return states of tools checked by the API.
 	return toolStateItems
@@ -127,12 +126,13 @@ def getToolStates_custom():
 
 # Get states of websites.
 # Returns Array of ToolStateItems. See models for further information.
-def getToolStates_websites(urls):
+def getToolStates_websites():
 
 	# Array of ToolStateItems.
 	toolStateItems = []
 
 	# Check all website urls.
+	urls = config_array["websites"]["websitesToCheck"]
 	for url in urls: 
 
 		# Check website states.
