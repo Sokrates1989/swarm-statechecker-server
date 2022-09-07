@@ -54,6 +54,7 @@ def getToolStates_api():
 					toolToCheck.toolIsDownMessageHasBeenSent,
 					toolToCheck.description
 				)
+				toolStateItem.setCheckFrequency(toolToCheck.stateCheckFrequency_inMinutes)
 				toolStateItems.append(toolStateItem)
 
 
@@ -68,6 +69,7 @@ def getToolStates_api():
 					toolToCheck.toolIsDownMessageHasBeenSent,
 					toolToCheck.description
 				)
+				toolStateItem.setCheckFrequency(toolToCheck.stateCheckFrequency_inMinutes)
 				toolStateItems.append(toolStateItem)
 
 	# Return states of tools checked by the API.
@@ -99,6 +101,7 @@ def getToolStatesMessage():
 			# Add description and statusMessage if not empty and spaces to end of message.
 			toolStatesMessage += "" if toolStateItem.description == "" else "\n" + str(toolStateItem.description)
 			toolStatesMessage += "" if toolStateItem.statusMessage == "" or toolStateItem.statusMessage == "OK" else "\n" + str(toolStateItem.statusMessage)
+			toolStatesMessage += "" if toolStateItem.checkingEveryXMinutes == None else "\nChecking state every <b>" + str(toolStateItem.checkingEveryXMinutes) + "</b> minutes"
 			toolStatesMessage += "\n\n"
 
 	return toolStatesMessage
