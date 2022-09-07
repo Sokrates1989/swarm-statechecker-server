@@ -20,6 +20,7 @@ import logger as Logger
 import databaseWrapper as DatabaseWrapper
 # Utils for getting state of tools.
 import stateCheckUtils
+import stringUtils
 
 ## Initialize vars.
 
@@ -73,7 +74,21 @@ def infoCheckingToolsIsWorking(justStartedChecking=False):
 	logger.logInformation(infoLogText)
 
 	# Send message to admin telegram chat.
-	bot.send_message(infoChatID, infoLogText)
+	# Does message have to be split?
+	if len(infoLogText) > 4096:
+
+		# Split message.
+		individualMessages = stringUtils.splitLongTextIntoWorkingMessages(infoLogText)
+
+		# Send messages.
+		for individualMessage in individualMessages:
+			bot.send_message(infoChatID, individualMessage)
+		
+			
+	else:
+		# Message does not have to be split.
+		bot.send_message(infoChatID, infoLogText)
+	
 
 
 
