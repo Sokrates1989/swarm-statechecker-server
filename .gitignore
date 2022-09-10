@@ -144,3 +144,6 @@ logs
 
 # Do not version message sent states. 
 messageSentStates
+
+# Do not version google drive authentication key. 
+service_account_key.json

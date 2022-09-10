@@ -1,5 +1,10 @@
 ## Utilities to get states of tools, that are being checked.
 
+# For accessing google drive.
+from __future__ import print_function
+from googleapiclient.discovery import build
+from oauth2client.service_account import ServiceAccountCredentials
+
 # For getting current timestamp.
 import time
 # For making POST / GET requests.
@@ -14,9 +19,13 @@ import fileUtils
 ## Own classes.
 # Database connection.
 import databaseWrapper as DatabaseWrapper
+# Convert dateString to unixTimestamp.
+import dateStringUtils
 # ToolStateItem from own models to use location independent.
 # Used to wrap state information about the tools to check.
 import toolStateItem as ToolStateItem
+# BackupCheckItem from own models to use location independent.
+import backupCheckItem as BackupCheckItem
 
 # Path to messageSentStates of custom checks.
 messageSentStatesDirectory = os.path.join(os.path.dirname(__file__), "..", "..", "messageSentStates/")
@@ -118,6 +127,7 @@ def getToolStates_custom():
 
 	# Check website states for felicitas wisdom.
 	toolStateItems += getToolStates_websites()
+	toolStateItems += getToolStates_backups()
 	
 	# Return states of tools checked by the API.
 	return toolStateItems
@@ -172,6 +182,120 @@ def getToolStates_websites():
 	
 	# Return states of tools checked by the API.
 	return toolStateItems
+
+
+
+# Get states of backups.
+# Returns Array of ToolStateItems. See models for further information.
+def getToolStates_backups():
+
+	# Array of ToolStateItems.
+	backupStateItems = []
+
+	# Database connection.
+	dbWrapper = DatabaseWrapper.DatabaseWrapper()
+
+	# Did all tools send a state info within desired timespan?
+	now = int(time.time())
+	allBackupsToCheck = dbWrapper.getAllBackupsToCheck()
+	if allBackupsToCheck: 
+		for backupToCheck in allBackupsToCheck:
+
+			# Has the state info been sent within the desired amount of time?
+			if int(backupToCheck.mostRecentBackupFile_creationDate) + int(backupToCheck.stateCheckFrequency_inMinutes) * 65 < now:
+				
+				# No valid state check withing desired timespan.
+
+				# Add state of tool to return array.
+				toolStateItem = ToolStateItem.ToolStateItem(
+					backupToCheck.name,
+					False, # Tool is up boolean value.
+					backupToCheck.backupIsDownMessageHasBeenSent,
+					backupToCheck.description
+				)
+				toolStateItem.indicateThatToolIsBackup()
+				toolStateItem.setCheckFrequency(backupToCheck.stateCheckFrequency_inMinutes)
+				backupStateItems.append(toolStateItem)
+
+
+			else:
+				
+				# There is a valid state check withing desired timespan.
+
+				# Add state of tool to return array.
+				toolStateItem = ToolStateItem.ToolStateItem(
+					backupToCheck.name,
+					True, # Tool is up boolean value.
+					backupToCheck.backupIsDownMessageHasBeenSent,
+					backupToCheck.description
+				)
+				toolStateItem.indicateThatToolIsBackup()
+				toolStateItem.setCheckFrequency(backupToCheck.stateCheckFrequency_inMinutes)
+				backupStateItems.append(toolStateItem)
+	
+	# Return states of tools checked by the API.
+	return backupStateItems
+
+
+
+
+# Check google drive folders and add them to backup checks.#
+# Similar behaviour as sending request to "/v1/backupcheck", but done directly from the server.
+def updateGoogleDriveFolderBackupChecks():
+
+	# Array of ToolStateItems.
+	toolStateItems = []
+
+	# Database connection.
+	dbWrapper = DatabaseWrapper.DatabaseWrapper()
+
+	# Connect to google drive.
+	scope = ['https://www.googleapis.com/auth/drive.metadata.readonly']
+	credentials = ServiceAccountCredentials.from_json_keyfile_name('service_account_key.json', scope)
+	service = build('drive', 'v3', credentials=credentials)
+
+	# Check all google drive folders of config.
+	googleDriveFoldersToCheck = config_array["googleDrive"]["foldersToCheck"]
+	for googleDriveFolder in googleDriveFoldersToCheck:
+
+		items = []
+		pageToken = ""
+		while pageToken is not None:
+			response = service.files().list(q="'" + googleDriveFolder["folderID"] + "' in parents", pageSize=1000, pageToken=pageToken, fields="nextPageToken, files(kind, id, name, createdTime, md5Checksum)").execute()
+			items.extend(response.get('files', []))
+			pageToken = response.get('nextPageToken')
+
+		# Sort files by their creation date (newest files first).
+		items.sort(key=getCreationDate, reverse=True)
+
+		if items:
+			backupCheckItem = BackupCheckItem.BackupCheckItem(
+				googleDriveFolder["name"],
+				googleDriveFolder["token"], 
+				googleDriveFolder["stateCheckFrequency_inMinutes"], 
+				dateStringUtils.convertGoogleDriveDateStringToUnixTimeStamp(items[0]["createdTime"]),
+				items[0]["md5Checksum"],
+				googleDriveFolder["description"]
+			)
+			dbWrapper.createOrUpdateBackupCheck(backupCheckItem)
+		else:
+			backupCheckItem = BackupCheckItem.BackupCheckItem(
+				googleDriveFolder["name"],
+				googleDriveFolder["token"], 
+				googleDriveFolder["stateCheckFrequency_inMinutes"], 
+				"0",
+				"no items",
+				googleDriveFolder["description"]
+			)
+			dbWrapper.createOrUpdateBackupCheck(backupCheckItem)
+
+
+
+
+# Sort files by their creation date -> get creation date of item.
+def getCreationDate(elem):
+    return elem["createdTime"]
+
 
 
 # Write state of sent message to file.

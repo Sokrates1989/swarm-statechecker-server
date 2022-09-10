@@ -27,6 +27,7 @@ class ToolStateItem:
 		self.toolIsDownMessageHasBeenSent = toolIsDownMessageHasBeenSent
 		self.statusMessage = ""
 		self.isCustomCheck = False
+		self.isBackupCheck = False
 		self.checkingEveryXMinutes = None
 
 
@@ -38,6 +39,11 @@ class ToolStateItem:
 	# Indicate, that checked tool is a custom check.
 	def indicateThatToolIsCustom(self):
 		self.isCustomCheck = True
+
+
+	# Indicate, that checked tool is a backup check.
+	def indicateThatToolIsBackup(self):
+		self.isBackupCheck = True
 
 
 	# Set frequency of tool check.

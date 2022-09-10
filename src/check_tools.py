@@ -107,6 +107,8 @@ if adminMessageEvery_calculatedOffset == 0:
 
 # How often to check websiteStates.
 checkWebsitesEveryXMinutes = int(config_array["websites"]["checkWebSitesEveryXMinutes"])
+# How often to check google drive backups.
+checkGoogleDriveEveryXMinutes = int(config_array["googleDrive"]["checkFilesEveryXMinutes"])
 
 i = 0
 print("checking ...")
@@ -122,13 +124,14 @@ while True:
 		if (i%printEvery == 0):
 			print("checking (" + str(i) + ") ...")
 
-		# Send message to admin chat.
-		if (i%adminMessageEvery_calculatedOffset == 0):
-			infoCheckingToolsIsWorking()
+		# Update google drive backup states.
+		if (i%checkGoogleDriveEveryXMinutes == 1):
+			stateCheckUtils.updateGoogleDriveFolderBackupChecks()
 
 		# Get states of tools.
 		toolStateItems_api = stateCheckUtils.getToolStates_api()
 		toolStateItems = toolStateItems_api
+		toolStateItems += stateCheckUtils.getToolStates_backups()
 
 		# Check websites.
 		if (i%checkWebsitesEveryXMinutes == 1):
@@ -155,6 +158,9 @@ while True:
 					# Indicate, that tool is down message has been sent.
 					if toolStateItem.isCustomCheck == True:
 						stateCheckUtils.writeMessageHasBeenSentStateToFile(toolStateItem, True)
+					elif toolStateItem.isBackupCheck == True:
+						# Indicate to DB, that message has been sent.
+						dbWrapper.updateBackupIsDownMessageHasBeenSentState(toolStateItem.name, 1)
 					else:
 						# Indicate to DB, that message has been sent.
 						dbWrapper.updateToolIsDownMessageHasBeenSentState(toolStateItem.name, 1)
@@ -182,6 +188,9 @@ while True:
 					# Indicate, that tool is down message has been sent.
 					if toolStateItem.isCustomCheck == True:
 						stateCheckUtils.writeMessageHasBeenSentStateToFile(toolStateItem, False)
+					elif toolStateItem.isBackupCheck == True:
+						# Indicate to DB, that message has been sent.
+						dbWrapper.updateBackupIsDownMessageHasBeenSentState(toolStateItem.name, 0)
 					else:
 						# Indicate to DB, that message has been sent.
 						dbWrapper.updateToolIsDownMessageHasBeenSentState(toolStateItem.name, 0)
@@ -193,11 +202,16 @@ while True:
 					bot.send_message(errorChatID, toolStateItemIsUpAgainMsg )
 
 
+
+		# Send message to admin chat.
+		if (i%adminMessageEvery_calculatedOffset == 0):
+			infoCheckingToolsIsWorking()
+
 		# Sleep 60 seconds.
 		time.sleep(60)
 
 	except Exception as e:
-		handleCommandException("An Error occured while checking schedule: ", str(e))
+		handleCommandException("An Error occured while checking tools: ", str(e))
 
 		# Sleep 60 seconds.
 		time.sleep(60)

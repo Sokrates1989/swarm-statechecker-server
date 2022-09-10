@@ -24,5 +24,27 @@
 			"https://websiteToTest.com",
 			"http://websiteToTest.com"
 		]
+	},
+	"googleDrive":
+	{
+		"checkFilesEveryXMinutes": 60,
+		"foldersToCheck":
+		[
+			{
+				"name": "Google Drive Folder 1",
+				"description" : "",
+				"folderID": "googleDriveFolder_ID",
+				"token" : "RANDOM STRING TOKEN THAT MUST REMAIN THE SAME EVERY UPDATE",
+				"stateCheckFrequency_inMinutes": 1500
+			},
+			{
+				"name": "Google Drive Folder 2",
+				"description" : "Description for Google Drive Folder 2",
+				"folderID": "googleDriveFolder_ID2",
+				"token" : "RANDOM STRING TOKEN THAT MUST REMAIN THE SAME EVERY UPDATE",
+				"stateCheckFrequency_inMinutes": 1500
+			}
+			
+		]
 	}
 }
