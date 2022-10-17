@@ -51,6 +51,7 @@ def handleCommandException(exceptionLocationAndAdditionalInformation, exception)
 	logger.logError(str(traceOfError) + "\n" + errorLogText)
 
 	# Send error message to admin telegram chat, if intended.
+	bot = telebot.TeleBot(botToken, parse_mode="HTML")
 	bot.send_message(errorChatID, errorLogText)
 
 
@@ -81,12 +82,14 @@ def infoCheckingToolsIsWorking(justStartedChecking=False):
 		individualMessages = stringUtils.splitLongTextIntoWorkingMessages(infoLogText)
 
 		# Send messages.
+		bot = telebot.TeleBot(botToken, parse_mode="HTML")
 		for individualMessage in individualMessages:
 			bot.send_message(infoChatID, individualMessage)
 		
 			
 	else:
 		# Message does not have to be split.
+		bot = telebot.TeleBot(botToken, parse_mode="HTML")
 		bot.send_message(infoChatID, infoLogText)
 	
 
@@ -115,6 +118,9 @@ print("checking ...")
 infoCheckingToolsIsWorking(True)
 while True:
 	try:
+		# Always recreate database to avoid disconnection error.
+		dbWrapper = DatabaseWrapper.DatabaseWrapper()
+		
 		## Info that checking of schedule is still taking place.
 
 		# Increment counter.
@@ -169,6 +175,7 @@ while True:
 					toolStateItemIsDownMsg = "Your tool is <b>DOWN!</b> \n\n<b>" + str(toolStateItem.name) + "</b>"
 					toolStateItemIsDownMsg += "" if toolStateItem.description == "" else "\n" + str(toolStateItem.description)
 					toolStateItemIsDownMsg += "" if toolStateItem.statusMessage == "" or toolStateItem.statusMessage == "OK" else "\n" + str(toolStateItem.statusMessage)
+					bot = telebot.TeleBot(botToken, parse_mode="HTML")
 					bot.send_message(errorChatID, toolStateItemIsDownMsg )
 
 
@@ -199,6 +206,7 @@ while True:
 					toolStateItemIsUpAgainMsg = "Your tool is <b>UP AGAIN!</b> \n\n<b>" + str(toolStateItem.name) + "</b>"
 					toolStateItemIsUpAgainMsg += "" if toolStateItem.description == "" else "\n" + str(toolStateItem.description)
 					toolStateItemIsUpAgainMsg += "" if toolStateItem.statusMessage == "" or toolStateItem.statusMessage == "OK" else "\n" + str(toolStateItem.statusMessage)
+					bot = telebot.TeleBot(botToken, parse_mode="HTML")
 					bot.send_message(errorChatID, toolStateItemIsUpAgainMsg )
 
 
