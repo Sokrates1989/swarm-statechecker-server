@@ -13,6 +13,9 @@ sys.path.insert(1, os.path.join(os.path.dirname(__file__), "src/", "models"))
 # Database Connection.
 import databaseWrapper as DatabaseWrapper
 
+# Checking credentials with hash utils.
+import hashUtils
+
 # StateCheckItem from own models to use location independent.
 import stateCheckItem as StateCheckItem
 
@@ -26,6 +29,8 @@ class StateCheckItem_pydantic(BaseModel):
     name: str
     description: Union[str, "None"] = "None"
     token: str
+    hashedString: Union[str, "None"] = "None"
+    autoHealCommand: Union[str, "None"] = "None"
     stateCheckFrequency_inMinutes: int
 
 
@@ -40,6 +45,7 @@ class BackupCheckItem_pydantic(BaseModel):
     stateCheckFrequency_inMinutes: int
     mostRecentBackupFile_creationDate: str
     mostRecentBackupFile_hash: str
+
 
 # Instantiate Fast API.
 app = FastAPI()
@@ -72,6 +78,7 @@ async def stop_statecheck(stateCheckItem_pydantic: StateCheckItem_pydantic, resp
         return {"message": "invalid token"}
     else:
         return stateCheckItem
+
 
 
 # Start checking a backup or update a backup check.
@@ -113,6 +120,15 @@ def convertPydanticModelToStateCheckItem(stateCheckItem_pydantic: StateCheckItem
         stateCheckItem_pydantic.stateCheckFrequency_inMinutes, 
         stateCheckItem_pydantic.description
         )
+
+    # Set hashedString if set.
+    if stateCheckItem_pydantic.hashedString != None and stateCheckItem_pydantic.hashedString != "None":
+        stateCheckItem.setHashedString(stateCheckItem_pydantic.hashedString)
+
+    # Set autoHealCommand if set.
+    if stateCheckItem_pydantic.autoHealCommand != None and stateCheckItem_pydantic.autoHealCommand != "None":
+        stateCheckItem.setAutoHealCommand(stateCheckItem_pydantic.autoHealCommand)
+
     return stateCheckItem
 
 
@@ -125,7 +141,7 @@ def convertPydanticModelToBackupCheckItem(backupCheckItem_pydantic: BackupCheckI
         backupCheckItem_pydantic.description = ""
 
     backupCheckItem = BackupCheckItem.BackupCheckItem(
-        backupCheckItem_pydantic.name, 
+        backupCheckItem_pydantic.name,
         backupCheckItem_pydantic.token, 
         backupCheckItem_pydantic.stateCheckFrequency_inMinutes, 
         backupCheckItem_pydantic.mostRecentBackupFile_creationDate, 

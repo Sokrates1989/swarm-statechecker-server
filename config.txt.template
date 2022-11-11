@@ -8,6 +8,11 @@
   		"database":"state_checker",
   		"port":"3306"
 	},
+	"credentials":
+	{
+		"password":"XXXXXXXXXXX",
+		"salt":"XXXXXXXXXXXX"
+	},
 	"telegram":
 	{
 		"botToken":"ENTERTHEBOTTOKEN_THEBOTFATHERGAVETOYOU",

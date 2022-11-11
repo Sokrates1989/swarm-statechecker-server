@@ -16,6 +16,25 @@
 #   "stateCheckFrequency_inMinutes": 60
 # }
 
+# Json model of a valid StateCheckItem with autoHealCommand to send to the API.
+# {
+#   "name": "Test",
+#   "description": "Just a test tool to test some tests",
+#   "token": "IOdeFyatMDKyCUmVqtQkk4eGcnBYvvGp6aCakzj0ZdSBBtCfGrQvGn8RSbHuJO7RaI6jzGqDq2zmYNaYwY1NHUQJ7xCtPzblGt96",
+#   "hashedString": "IOdeFyatMDKyCUmVqtQkk4eGcnBYvvGp6aCakzj0ZdSBBtCfGrQvGn8RSbHuJO7RaI6jzGqDq2zmYNaYwY1NHUQJ7xCtPzblGt96",
+#   "autoHealCommand": "echo test",
+#   "stateCheckFrequency_inMinutes": 60
+# }
+
+# Json model of a valid StateCheckItem (without autoHealCommand) to send to the API.
+# {
+#   "name": "Test",
+#   "description": "Just a test tool to test some tests",
+#   "token": "IOdeFyatMDKyCUmVqtQkk4eGcnBYvvGp6aCakzj0ZdSBBtCfGrQvGn8RSbHuJO7RaI6jzGqDq2zmYNaYwY1NHUQJ7xCtPzblGt96",
+#   "hashedString": "IOdeFyatMDKyCUmVqtQkk4eGcnBYvvGp6aCakzj0ZdSBBtCfGrQvGn8RSbHuJO7RaI6jzGqDq2zmYNaYwY1NHUQJ7xCtPzblGt96",
+#   "stateCheckFrequency_inMinutes": 60
+# }
+
 
 class StateCheckItem:
 
@@ -29,3 +48,14 @@ class StateCheckItem:
 		self.stateCheckFrequency_inMinutes = stateCheckFrequency_inMinutes
 		self.lastTimeToolWasUp = lastTimeToolWasUp
 		self.toolIsDownMessageHasBeenSent = toolIsDownMessageHasBeenSent
+		self.hashedString = ""
+		self.autoHealCommand = ""
+
+	# Set hashedString.
+	def setHashedString(self, hashedString):
+		self.hashedString = hashedString
+
+	# Set autoHealCommand.
+	def setAutoHealCommand(self, autoHealCommand):
+		self.autoHealCommand = autoHealCommand
+
