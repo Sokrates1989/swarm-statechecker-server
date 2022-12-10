@@ -133,7 +133,10 @@ dmypy.json
 
 ## Custom gitignore adaptions.
 
-# Do not version config.txt . 
+# Do not version IDE .
+.idea
+
+# Do not version config.txt .
 config.txt
 
 # Ignore the Environment (.env) file, that contains passwords and connection details.
