@@ -52,7 +52,7 @@ def getToolStates_api():
 		for toolToCheck in allToolsToCheck:
 
 			# Has the state info been sent within the desired amount of time?
-			if int(toolToCheck.lastTimeToolWasUp) + int(toolToCheck.stateCheckFrequency_inMinutes) * 65 < now:
+			if int(toolToCheck.lastTimeToolWasUp) + int(toolToCheck.stateCheckFrequency_inMinutes) * 60 + int(config_array["toolsUsingApi_tolerancePeriod_inSeconds"]) < now:
 				
 				# No valid state check withing desired timespan.
 
