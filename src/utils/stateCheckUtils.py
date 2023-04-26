@@ -239,8 +239,10 @@ def getToolStates_backups():
 
 
 
-# Check google drive folders and add them to backup checks.#
+# Check Google Drive folders and add them to backup checks.
 # Similar behaviour as sending request to "/v1/backupcheck", but done directly from the server.
+# MAKE SURE THAT FOLDER IS GIVEN READ WRITES TO ACCOUNT THAT HOLDS CREDENTIALS.
+# (See previously working folder's rights in Google Drive for more info)
 def updateGoogleDriveFolderBackupChecks():
 
 	# Array of ToolStateItems.
@@ -254,7 +256,7 @@ def updateGoogleDriveFolderBackupChecks():
 	credentials = ServiceAccountCredentials.from_json_keyfile_name('service_account_key.json', scope)
 	service = build('drive', 'v3', credentials=credentials)
 
-	# Check all google drive folders of config.
+	# Check all Google Drive folders of config.
 	googleDriveFoldersToCheck = config_array["googleDrive"]["foldersToCheck"]
 	for googleDriveFolder in googleDriveFoldersToCheck:
 
