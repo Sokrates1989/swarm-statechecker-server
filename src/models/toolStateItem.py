@@ -6,9 +6,9 @@ class ToolStateItem:
 	def __init__(self, name, toolIsUp, toolIsDownMessageHasBeenSent, description = ""):
 
 		# Convert toolIsDownMessageHasBeenSent to boolean.
-		if toolIsDownMessageHasBeenSent == 0:
+		if toolIsDownMessageHasBeenSent == 0 or toolIsDownMessageHasBeenSent == False:
 			toolIsDownMessageHasBeenSent = False
-		if toolIsDownMessageHasBeenSent == 1:
+		if toolIsDownMessageHasBeenSent == 1 or toolIsDownMessageHasBeenSent == True:
 			toolIsDownMessageHasBeenSent = True
 
 		# Convert toolIsUp to boolean.
@@ -49,3 +49,16 @@ class ToolStateItem:
 	# Set frequency of tool check.
 	def setCheckFrequency(self, checkingEveryXMinutes):
 		self.checkingEveryXMinutes = checkingEveryXMinutes
+
+
+	def asMap(self):
+		return {
+			"name": self.name,
+			"description": self.description,
+			"toolIsUp": self.toolIsUp,
+			"toolIsDownMessageHasBeenSent": self.toolIsDownMessageHasBeenSent,
+			"statusMessage": self.statusMessage,
+			"isCustomCheck": self.isCustomCheck,
+			"isBackupCheck": self.isBackupCheck,
+			"checkingEveryXMinutes": self.checkingEveryXMinutes,
+		}
