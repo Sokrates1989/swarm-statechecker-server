@@ -1,0 +1,43 @@
+version: "3.9"
+
+services:
+
+  state_checker_db:
+
+    image: mysql:latest
+    environment:
+      - MYSQL_ROOT_PASSWORD_FILE=/run/secrets/testdb_pw3
+    secrets:
+      - testdb_pw3
+    networks:
+      - state-checker-net
+    volumes:
+      - ${DATA_ROOT}/db_data:/var/lib/mysql
+      - ${DATA_ROOT}/install/state_checker.sql:/docker-entrypoint-initdb.d/init.sql
+    deploy:
+      mode: replicated
+      replicas: 1 
+
+  state_checker_api:
+    image: sokrates1989/statechecker-server-api-and-check:DEBUG-0.0.1
+    environment:
+      - STATECHECKER_SERVER_CONFIG=${STATECHECKER_SERVER_CONFIG}
+    networks:
+      - state-checker-net
+    ports:
+      - "${REST_API_PORT}"
+    command: ["uvicorn", "main_api_startpoint:app", "--host", "0.0.0.0", "--port", "${REST_API_PORT}"]
+
+  state_checker_check:
+    image: sokrates1989/statechecker-server-api-and-check:DEBUG-0.0.1
+    environment:
+      - STATECHECKER_SERVER_CONFIG=${STATECHECKER_SERVER_CONFIG}
+    networks:
+      - state-checker-net
+    command: ["python", "src/check_tools.py"]
+
+    
+networks:
+  state-checker-net:
+    driver: overlay
+

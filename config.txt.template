@@ -1,5 +1,4 @@
 {
-	"installPath": "/code",
 	"toolsUsingApi_tolerancePeriod_inSeconds": "100",
 	"database":
 	{
@@ -8,11 +7,6 @@
 		"password":"ENTERYOURPASSWORD",
   		"database":"state_checker",
   		"port":"3306"
-	},
-	"credentials":
-	{
-		"password":"XXXXXXXXXXX",
-		"salt":"XXXXXXXXXXXX"
 	},
 	"telegram":
 	{

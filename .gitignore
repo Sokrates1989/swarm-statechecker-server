@@ -150,3 +150,8 @@ messageSentStates
 
 # Do not version google drive authentication key. 
 service_account_key.json
+
+
+# Ignore database data, but keep directory itself (by keeping .gitkeep file)
+db_data/*
+!db_data/.gitkeep
