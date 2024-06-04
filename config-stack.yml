@@ -2,31 +2,16 @@ version: "3.9"
 
 services:
 
-  state_checker_db:
-
-    image: mysql:latest
-    environment:
-      - MYSQL_ROOT_PASSWORD_FILE=/run/secrets/testdb_pw3
-    secrets:
-      - testdb_pw3
-    networks:
-      - state-checker-net
-    volumes:
-      - ${DATA_ROOT}/db_data:/var/lib/mysql
-      - ${DATA_ROOT}/install/state_checker.sql:/docker-entrypoint-initdb.d/init.sql
-    deploy:
-      mode: replicated
-      replicas: 1 
-
   state_checker_api:
     image: sokrates1989/statechecker-server-api-and-check:DEBUG-0.0.1
     environment:
       - STATECHECKER_SERVER_CONFIG=${STATECHECKER_SERVER_CONFIG}
     networks:
       - state-checker-net
+      - traefik
     ports:
-      - "${REST_API_PORT}"
-    command: ["uvicorn", "main_api_startpoint:app", "--host", "0.0.0.0", "--port", "${REST_API_PORT}"]
+      - "${API_PORT}:${API_PORT}"
+    command: ["uvicorn", "main_api_startpoint:app", "--host", "0.0.0.0", "--port", "${API_PORT}"]
 
   state_checker_check:
     image: sokrates1989/statechecker-server-api-and-check:DEBUG-0.0.1
@@ -34,10 +19,68 @@ services:
       - STATECHECKER_SERVER_CONFIG=${STATECHECKER_SERVER_CONFIG}
     networks:
       - state-checker-net
+    deploy:
+      labels:
+        - traefik.enable=true
+        - traefik.constraint-label=traefik-public
+        - traefik.http.services.$statechecker-server-api.loadbalancer.server.port=80
+        - traefik.http.routers.$statechecker-server-api.rule=Host(`${API_URL}`)
+        - traefik.http.routers.$statechecker-server-api.entrypoints=https,http,web
+        - traefik.http.routers.$statechecker-server-api.tls=true
+        - traefik.http.routers.$statechecker-server-api.tls.certresolver=le
+      mode: replicated
+      replicas: 1
     command: ["python", "src/check_tools.py"]
+
+
+  state_checker_db:
+    image: mysql:8.4
+    environment:
+      - MYSQL_DATABASE=state_checker
+      - MYSQL_USER=state_checker
+      - MYSQL_PASSWORD_FILE=/run/secrets/STATECHECKER_SERVER_DB_USER_PW
+      - MYSQL_ROOT_PASSWORD_FILE=/run/secrets/STATECHECKER_SERVER_DB_ROOT_USER_PW
+    secrets:
+      - STATECHECKER_SERVER_DB_USER_PW
+      - STATECHECKER_SERVER_DB_ROOT_USER_PW
+    networks:
+      - state-checker-net
+    volumes:
+      - ${DATA_ROOT}/db_data:/var/lib/mysql
+      - ${DATA_ROOT}/install/state_checker.sql:/docker-entrypoint-initdb.d/init.sql
+    deploy:
+      mode: replicated
+      replicas: 1
+
+  phpmyadmin:
+    image: phpmyadmin:5.2
+    environment:
+      - PMA_HOST=state_checker_db
+    networks:
+      - state-checker-net
+      - traefik
+    deploy:
+      labels:
+        - traefik.enable=true
+        - traefik.constraint-label=traefik-public
+        - traefik.http.services.$statechecker-server-phpmyadmin.loadbalancer.server.port=80
+        - traefik.http.routers.$statechecker-server-phpmyadmin.rule=Host(`${PHPMYADMIN_URL}`)
+        - traefik.http.routers.$statechecker-server-phpmyadmin.entrypoints=https,http,web
+        - traefik.http.routers.$statechecker-server-phpmyadmin.tls=true
+        - traefik.http.routers.$statechecker-server-phpmyadmin.tls.certresolver=le
+      mode: replicated
+      replicas: ${PHPMYADMIN_REPLICAS}
 
     
 networks:
   state-checker-net:
     driver: overlay
+  traefik:
+    external: true
+
+secrets:
+  "STATECHECKER_SERVER_DB_USER_PW":
+    external: true
+  "STATECHECKER_SERVER_DB_ROOT_USER_PW":
+    external: true
 
