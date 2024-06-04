@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
 
-  state_checker_api:
+  api:
     image: sokrates1989/statechecker-server-api-and-check:DEBUG-0.0.2
     environment:
       - STATECHECKER_SERVER_CONFIG=${STATECHECKER_SERVER_CONFIG}
@@ -13,7 +13,7 @@ services:
       - "${API_PORT}:${API_PORT}"
     command: ["uvicorn", "main_api_startpoint:app", "--host", "0.0.0.0", "--port", "${API_PORT}"]
 
-  state_checker_check:
+  check:
     image: sokrates1989/statechecker-server-api-and-check:DEBUG-0.0.2
     environment:
       - STATECHECKER_SERVER_CONFIG=${STATECHECKER_SERVER_CONFIG}
@@ -33,7 +33,7 @@ services:
     command: ["python", "src/check_tools.py"]
 
 
-  state_checker_db:
+  db:
     image: mysql:8.4
     environment:
       - MYSQL_DATABASE=state_checker
@@ -55,7 +55,7 @@ services:
   phpmyadmin:
     image: phpmyadmin:5.2
     environment:
-      - PMA_HOST=state_checker_db
+      - PMA_HOST=${STACK_NAME}_db
     networks:
       - state-checker-net
       - traefik

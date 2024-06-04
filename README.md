@@ -88,3 +88,11 @@ cp .env.template .env
 vi .env
 ```
 
+
+
+# Deploy
+
+#### Requires traefik
+```bash
+docker stack deploy -c <(docker-compose -f config-stack.yml config) statechecker-server
+```
