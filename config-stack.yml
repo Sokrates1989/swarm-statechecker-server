@@ -70,6 +70,21 @@ services:
       mode: replicated
       replicas: 1
 
+  db-migration:
+    image: mysql:8.0
+    environment:
+      - MYSQL_DATABASE=state_checker
+      - MYSQL_USER=state_checker
+    secrets:
+      - STATECHECKER_SERVER_DB_USER_PW
+    networks:
+      - state-checker-net
+    volumes:
+      - ${DATA_ROOT}/install/database/migrations:/scripts
+    entrypoint: ["/bin/bash", "/scripts/run_migrations.sh"]
+    depends_on:
+      - db
+
   phpmyadmin:
     image: phpmyadmin:5.2
     environment:
