@@ -10,7 +10,7 @@ BEGIN
             `ID` BIGINT NOT NULL AUTO_INCREMENT,
             `name` TEXT NOT NULL,
             `state` TEXT NOT NULL,
-            `messageHasBeenSent` TINYINT NOT NULL DEFAULT '0',
+            `isDownMessageHasBeenSent` TINYINT NOT NULL DEFAULT '0',
             PRIMARY KEY (`ID`)
         ) ENGINE=InnoDB;
 
