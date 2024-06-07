@@ -3,7 +3,7 @@ version: "3.9"
 services:
 
   api:
-    image: sokrates1989/statechecker-server-api-and-check:DEBUG-0.0.4
+    image: sokrates1989/statechecker-server-api-and-check:DEBUG-0.0.5
     environment:
       # Database connection.
       - DB_HOST=${STACK_NAME}_db
@@ -35,7 +35,7 @@ services:
 
 
   check:
-    image: sokrates1989/statechecker-server-api-and-check:DEBUG-0.0.4
+    image: sokrates1989/statechecker-server-api-and-check:DEBUG-0.0.5
     environment:
       # Database connection.
       - DB_HOST=${STACK_NAME}_db
@@ -82,8 +82,6 @@ services:
     volumes:
       - ${DATA_ROOT}/install/database/migrations:/scripts
     entrypoint: ["/bin/bash", "/scripts/run_migrations.sh"]
-    depends_on:
-      - db
 
   phpmyadmin:
     image: phpmyadmin:5.2
