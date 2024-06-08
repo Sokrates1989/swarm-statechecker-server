@@ -17,6 +17,8 @@ services:
     networks:
       - state-checker-net
       - traefik
+    volumes:
+      - ${DATA_ROOT}/logs/api:/code/logs
     ports:
       - "${API_PORT}:${API_PORT}"
     deploy:
@@ -48,6 +50,8 @@ services:
       - STATECHECKER_SERVER_DB_USER_PW
     networks:
       - state-checker-net
+    volumes:
+      - ${DATA_ROOT}/logs/check:/code/logs
     command: ["python", "src/check_tools.py"]
 
 
