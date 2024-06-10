@@ -3,7 +3,7 @@ version: "3.9"
 services:
 
   api:
-    image: sokrates1989/statechecker-server-api-and-check:DEBUG-0.0.5
+    image: sokrates1989/statechecker-server-api-and-check:DEBUG-0.0.23
     environment:
       # Database connection.
       - DB_HOST=${STACK_NAME}_db
@@ -37,7 +37,7 @@ services:
 
 
   check:
-    image: sokrates1989/statechecker-server-api-and-check:DEBUG-0.0.5
+    image: sokrates1989/statechecker-server-api-and-check:DEBUG-0.0.23
     environment:
       # Database connection.
       - DB_HOST=${STACK_NAME}_db
@@ -46,12 +46,18 @@ services:
       - DB_NAME=state_checker
       # Config file with website, folders and tools to check.
       - STATECHECKER_SERVER_CONFIG=${STATECHECKER_SERVER_CONFIG}
+      # Google Drive Backup check.
+      - GOOGLE_DRIVE_SERVICE_ACCOUNT_JSON_FILE=/run/secrets/STATECHECKER_SERVER_GOOGLE_DRIVE_SERVICE_ACCOUNT_JSON
     secrets:
       - STATECHECKER_SERVER_DB_USER_PW
+      - STATECHECKER_SERVER_GOOGLE_DRIVE_SERVICE_ACCOUNT_JSON
     networks:
       - state-checker-net
     volumes:
       - ${DATA_ROOT}/logs/check:/code/logs
+    deploy:
+      mode: replicated
+      replicas: 1
     command: ["python", "src/check_tools.py"]
 
 
@@ -117,5 +123,7 @@ secrets:
   "STATECHECKER_SERVER_DB_USER_PW":
     external: true
   "STATECHECKER_SERVER_DB_ROOT_USER_PW":
+    external: true
+  "STATECHECKER_SERVER_GOOGLE_DRIVE_SERVICE_ACCOUNT_JSON":
     external: true
 

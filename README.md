@@ -33,14 +33,6 @@ Check if your created tools and websites are running correctly and send a telegr
 
 
 # Prerequisites
-## Swarm Cronjobs
-To make statechecker check run every x minutes (can be customized in .env) deploy https://github.com/crazy-max/swarm-cronjob or another way to implement peridical launch of services.
-
-Implementation help can be found at https://github.com/Sokrates1989/swarm-cronjob.git.
-
-More infromation
- - https://crazymax.dev/swarm-cronjob/
- - https://pkg.go.dev/github.com/robfig/cron#hdr-CRON_Expression_Format
 
 
 # First Setup
@@ -64,7 +56,7 @@ git clone https://github.com/Sokrates1989/docker-stateChecker-server.git .
 
 ### Create secrets in docker swarm
 
-All Secrets must be created for the stack to work.
+All Secrets must be created for the stack to work. If you are not indending to use a secret, you can just create the secret with the text "none".
 ```bash
 # STATECHECKER DATABASE ROOT PASSWORD.
 # This is the password for the root user of the database.
@@ -76,6 +68,13 @@ rm secret.txt
 # This is the password for the database user provided in .env used to read and write data.
 vi secret.txt  # Then insert password (Make sure the token does not contain any backslashes "\") and save the file.
 docker secret create STATECHECKER_SERVER_DB_USER_PW secret.txt 
+rm secret.txt
+
+# STATECHECKER GOOGLE DRIVE SERVICE ACCOUNT JSON for google drive backup checks.
+# This is the json created during allowing google drive third party applications allow access.
+# Insert "none", if you do not want to use google drive backup checks.
+vi secret.txt  # Then insert password (Make sure the password does not contain any backslashes "\") and save the file.
+docker secret create STATECHECKER_SERVER_GOOGLE_DRIVE_SERVICE_ACCOUNT_JSON secret.txt 
 rm secret.txt
 ```
 
