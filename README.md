@@ -73,8 +73,22 @@ rm secret.txt
 # STATECHECKER GOOGLE DRIVE SERVICE ACCOUNT JSON for google drive backup checks.
 # This is the json created during allowing google drive third party applications allow access.
 # Insert "none", if you do not want to use google drive backup checks.
-vi secret.txt  # Then insert password (Make sure the password does not contain any backslashes "\") and save the file.
+vi secret.txt  # json representation as provided by google (keep "\n").
 docker secret create STATECHECKER_SERVER_GOOGLE_DRIVE_SERVICE_ACCOUNT_JSON secret.txt 
+rm secret.txt
+
+# STATECHECKER SERVER TELEGRAM SENDER BOT TOKEN.
+# This is the BotToken given to you from BotFather.
+# Insert "none", if you do not want to use telegram status messages.
+vi secret.txt  # Then insert bot token (Make sure the token does not contain any backslashes "\") and save the file.
+docker secret create STATECHECKER_SERVER_TELEGRAM_SENDER_BOT_TOKEN secret.txt 
+rm secret.txt
+
+# STATECHECKER SERVER EMAIL SENDER PASSWORD.
+# This is the SMTP Server password.
+# Insert "none", if you do not want to use email status messages.
+vi secret.txt  # Then insert password (Make sure the token does not contain any backslashes "\") and save the file.
+docker secret create STATECHECKER_SERVER_EMAIL_SENDER_PASSWORD secret.txt 
 rm secret.txt
 ```
 
