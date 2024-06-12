@@ -3,7 +3,7 @@ version: "3.9"
 services:
 
   api:
-    image: sokrates1989/statechecker-server-api-and-check:DEBUG-0.1.0
+    image: sokrates1989/statechecker-server-api-and-check:DEBUG-0.3.1
     environment:
       # Logging.
       - TIMEZONE=${TIMEZONE}
@@ -39,7 +39,7 @@ services:
 
 
   check:
-    image: sokrates1989/statechecker-server-api-and-check:DEBUG-0.1.0
+    image: sokrates1989/statechecker-server-api-and-check:DEBUG-0.3.1
     environment:
       # Logging.
       - TIMEZONE=${TIMEZONE}
