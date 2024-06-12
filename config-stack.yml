@@ -3,8 +3,11 @@ version: "3.9"
 services:
 
   api:
-    image: sokrates1989/statechecker-server-api-and-check:DEBUG-0.3.1
+    image: sokrates1989/statechecker-server-api-and-check:DEBUG-0.4.0
     environment:
+      # API Authentication.
+      - SERVER_AUTHENTICATION_TOKEN_FILE=/run/secrets/STATECHECKER_SERVER_AUTHENTICATION_TOKEN
+      - SERVER_AUTHENTICATION_TOKEN=${SERVER_AUTHENTICATION_TOKEN}
       # Logging.
       - TIMEZONE=${TIMEZONE}
       # Database connection.
@@ -15,6 +18,7 @@ services:
       # Config file with website, folders and tools to check.
       - STATECHECKER_SERVER_CONFIG=${STATECHECKER_SERVER_CONFIG}
     secrets:
+      - STATECHECKER_SERVER_AUTHENTICATION_TOKEN
       - STATECHECKER_SERVER_DB_USER_PW
     networks:
       - state-checker-net
@@ -39,7 +43,7 @@ services:
 
 
   check:
-    image: sokrates1989/statechecker-server-api-and-check:DEBUG-0.3.1
+    image: sokrates1989/statechecker-server-api-and-check:DEBUG-0.4.0
     environment:
       # Logging.
       - TIMEZONE=${TIMEZONE}
@@ -147,6 +151,8 @@ networks:
     external: true
 
 secrets:
+  "STATECHECKER_SERVER_AUTHENTICATION_TOKEN":
+    external: true
   "STATECHECKER_SERVER_DB_USER_PW":
     external: true
   "STATECHECKER_SERVER_DB_ROOT_USER_PW":

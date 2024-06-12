@@ -1,6 +1,13 @@
 # statechecker-server
 Check if your created tools and websites are running correctly and send a telegram message if not.
 
+# Backlog
+Stuff to do, that just could not be done in time
+- Improve this README
+  - Secret creation 
+    - Auth Token
+
+
 ## Table of contents
 1. [Included packages](#included-packages)
 2. [Prerequisites](#prerequisites)
@@ -58,6 +65,12 @@ git clone https://github.com/Sokrates1989/docker-stateChecker-server.git .
 
 All Secrets must be created for the stack to work. If you are not indending to use a secret, you can just create the secret with the text "none".
 ```bash
+# STATECHECKER SERVER AUTHENTICATION TOKEN.
+# This is the token that is used to secure every interaction with the api.
+vi secret.txt  # Then insert token (Make sure the token does not contain any backslashes "\") and save the file.
+docker secret create STATECHECKER_SERVER_AUTHENTICATION_TOKEN secret.txt 
+rm secret.txt
+
 # STATECHECKER DATABASE ROOT PASSWORD.
 # This is the password for the root user of the database.
 vi secret.txt  # Then insert password (Make sure the token does not contain any backslashes "\") and save the file.
