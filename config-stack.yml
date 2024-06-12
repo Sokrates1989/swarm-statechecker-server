@@ -5,6 +5,8 @@ services:
   api:
     image: sokrates1989/statechecker-server-api-and-check:DEBUG-0.1.0
     environment:
+      # Logging.
+      - TIMEZONE=${TIMEZONE}
       # Database connection.
       - DB_HOST=${STACK_NAME}_db
       - DB_USER=state_checker
@@ -39,6 +41,8 @@ services:
   check:
     image: sokrates1989/statechecker-server-api-and-check:DEBUG-0.1.0
     environment:
+      # Logging.
+      - TIMEZONE=${TIMEZONE}
       # Check Frequency.
       - CHECK_WEBSITES_EVERY_X_MINUTES=${CHECK_WEBSITES_EVERY_X_MINUTES}
       - CHECK_GOOGLEDRIVE_EVERY_X_MINUTES=${CHECK_GOOGLEDRIVE_EVERY_X_MINUTES}
